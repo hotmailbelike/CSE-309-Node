@@ -2,6 +2,30 @@ var http = require("http");
 const express = require("express");
 const app = express();
 const server = http.Server(app);
+const bodyParser = require("body-parser");
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post("/new_article", (request, response) => {
+  console.log(request.body);
+  // console.log(request.body.title);
+  // console.log(request.body.content);
+
+  response.json({ msg: "successfully received" });
+});
+
+app.get("/", function(request, response) {
+  response.sendFile(__dirname + "/index.html");
+});
+
+app.get("/second", function(request, response) {
+  response.sendFile(__dirname + "/second.html");
+});
+
+app.get("/new", function(request, response) {
+  response.sendFile(__dirname + "/form.html");
+});
+
 // const fs = require("fs");
 
 // var server = http.createServer(function(req, res) {
@@ -21,14 +45,6 @@ const server = http.Server(app);
 
 //   // res.end("Hello World\n");
 // });
-
-app.get("/", function(request, response) {
-  response.sendFile(__dirname + "/index.html");
-});
-
-app.get("/second", function(request, response) {
-  response.sendFile(__dirname + "/second.html");
-});
 
 server.listen(3000, "localhost", function() {
   console.log("Server running");
