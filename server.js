@@ -6,8 +6,11 @@ const bodyParser = require("body-parser");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+let articles = [];
+
 app.post("/new_article", (request, response) => {
-  console.log(request.body);
+  articles.push(request.body);
+  console.log(articles);
   // console.log(request.body.title);
   // console.log(request.body.content);
 
@@ -15,15 +18,25 @@ app.post("/new_article", (request, response) => {
 });
 
 app.get("/", function(request, response) {
-  response.sendFile(__dirname + "/index.html");
+  response.sendFile(__dirname + "/views/index.html");
 });
 
 app.get("/second", function(request, response) {
-  response.sendFile(__dirname + "/second.html");
+  response.sendFile(__dirname + "/views/second.html");
 });
 
 app.get("/new", function(request, response) {
-  response.sendFile(__dirname + "/form.html");
+  response.sendFile(__dirname + "/views/form.html");
+});
+
+app.get("/article/:index", (req, res) => {
+  if (articles[req.params.index]) {
+    res.render("article.ejs", {
+      article: articles[req.params.index]
+    });
+  } else {
+    res.json({ msg: "Article not found" });
+  }
 });
 
 // const fs = require("fs");

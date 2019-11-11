@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Form</title>
+  </head>
+  <body>
+    <h1>New Article</h1>
+    <label for="title">Title</label>
+    <input type="text" id="title" />
+    <label for="content">Content</label>
+    <input type="text" id="content" />
+
+    <button id="submit">Submit</button>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script>
+      var article = { title: "", content: "" };
+      $("#submit").click(function() {
+        article.title = $("#title").val();
+        article.content = $("#content").val();
+        $.ajax({
+          method: "POST",
+          url: "/new_article",
+          data: article
+        })
+          .done(response => console.log(response))
+          .fail(response => console.log(response));
+      });
+    </script>
+  </body>
+</html>
