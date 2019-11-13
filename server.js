@@ -4,11 +4,41 @@ const app = express();
 const server = http.Server(app);
 const bodyParser = require("body-parser");
 
+const mongo = require("mongodb");
+
+var db,
+  uri = "mongodb+srv://user_0:papponi312@cluster0-vq45a.mongodb.net/test";
+
+mongo.MongoClient.connect(
+  uri,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  },
+  (err, client) => {
+    if (err) {
+      console.log("No can connect to db");
+    } else {
+      console.log("Connected to DB");
+
+      db = client.db("node-cw9");
+    }
+  }
+);
+
+var save = form_data => {
+  db.createCollection("articles", (err, result) => {
+    var collection = db.collection("articles");
+    collection.save(form_data);
+  });
+};
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 let articles = [];
 
 app.post("/new_article", (request, response) => {
+  save(request.body);
   articles.push(request.body);
   console.log(articles);
   // console.log(request.body.title);
