@@ -3,48 +3,80 @@ const express = require("express");
 const app = express();
 const server = http.Server(app);
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 const mongo = require("mongodb");
 
 var db,
-  uri = "mongodb+srv://user_0:papponi312@cluster0-vq45a.mongodb.net/test";
+  uri =
+    "mongodb+srv://user_0:papponi312@cluster0-vq45a.mongodb.net/mongoosedbms";
 
-mongo.MongoClient.connect(
-  uri,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+mongoose.connection.on("error", e => {
+  console.log("Can't connect to dbms");
+});
+
+// mongo.MongoClient.connect(
+//   uri,
+//   {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+//   },
+//   (err, client) => {
+//     if (err) {
+//       console.log("No can connect to db");
+//     } else {
+//       console.log("Connected to DB");
+
+//       db = client.db("node-cw9");
+//     }
+//   }
+// );
+
+// var save = form_data => {
+//   db.createCollection("articles", (err, result) => {
+//     var collection = db.collection("articles");
+//     collection.save(form_data);
+//   });
+// };
+
+const Schema = mongoose.Schema;
+
+const articleSchema = new Schema({
+  title: {
+    type: String,
+    required: "Input Title Please"
   },
-  (err, client) => {
-    if (err) {
-      console.log("No can connect to db");
-    } else {
-      console.log("Connected to DB");
-
-      db = client.db("node-cw9");
-    }
+  content: {
+    type: String,
+    required: "Input contents please"
   }
-);
+});
 
-var save = form_data => {
-  db.createCollection("articles", (err, result) => {
-    var collection = db.collection("articles");
-    collection.save(form_data);
-  });
-};
+const Article = mongoose.model("Article", articleSchema);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 let articles = [];
 
 app.post("/new_article", (request, response) => {
-  save(request.body);
-  articles.push(request.body);
-  console.log(articles);
+  // save(request.body);
+  console.log(request.body);
+
+  let article = new Article(request.body);
+  article.save((e, data) => {
+    if (e) {
+      return response.status(400).json({ msg: "All fields needed" });
+    }
+    return response.status(200).json({ article: data });
+  });
+  // articles.push(request.body);
+  // console.log(articles);
   // console.log(request.body.title);
   // console.log(request.body.content);
 
-  response.json({ msg: "successfully received" });
+  // response.json({ msg: "successfully received" });
 });
 
 app.get("/", function(request, response) {
