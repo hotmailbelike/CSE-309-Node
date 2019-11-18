@@ -91,10 +91,29 @@ app.get("/new", function(request, response) {
   response.sendFile(__dirname + "/views/form.html");
 });
 
-app.get("/article/:index", (req, res) => {
-  if (articles[req.params.index]) {
-    res.render("article.ejs", {
-      article: articles[req.params.index]
+// app.get("/article/:index", (req, res) => {
+//   if (articles[req.params.index]) {
+//     res.render("article.ejs", {
+//       article: articles[req.params.index]
+//     });
+//   } else {
+//     res.json({ msg: "Article not found" });
+//   }
+// });
+
+app.get("/article/:id", (req, res) => {
+  // console.log(articles[req.params.id]);
+
+  if (req.params.id) {
+    Article.find({ _id: req.params.id }, (e, data) => {
+      if (e) {
+        return res.status(400).json({ msg: "Can't find result" });
+      }
+      // console.log(data[1]);
+
+      return res.render("article.ejs", {
+        article: data[0]
+      });
     });
   } else {
     res.json({ msg: "Article not found" });
