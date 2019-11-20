@@ -5,7 +5,9 @@ const server = http.Server(app);
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-const mongo = require("mongodb");
+// const mongo = require("mongodb");
+app.use(bodyParser.urlencoded({ extended: true }));
+require("./routes/articles.routes")(app);
 
 var db,
   uri =
@@ -40,23 +42,6 @@ mongoose.connection.on("error", e => {
 //     collection.save(form_data);
 //   });
 // };
-
-const Schema = mongoose.Schema;
-
-const articleSchema = new Schema({
-  title: {
-    type: String,
-    required: "Input Title Please"
-  },
-  content: {
-    type: String,
-    required: "Input contents please"
-  }
-});
-
-const Article = mongoose.model("Article", articleSchema);
-
-app.use(bodyParser.urlencoded({ extended: true }));
 
 let articles = [];
 
